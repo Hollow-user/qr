@@ -1,0 +1,39 @@
+{% extends 'testpages/base_page.html' %}
+{% load qr_code %}
+
+
+
+
+{% block title %}
+    Site #1
+{% endblock %}
+
+
+{% block content %}
+
+
+        {% for lecture in lectures %}
+
+
+                <div class="card mt-5 ml-auto mr-auto" style="width: 18rem;">
+
+      <div class="card-body">
+        <h5 class="card-title">{{ lecture.title }}</h5>
+        <p class="card-text"> {{ lecture.date}} </p>
+        <a href="{% url 'thx_url'%}" class="btn btn-primary"> Нажмите что-бы отметится({{lecture.visiters}})</a>
+      </div>
+    </div>
+
+
+
+
+
+
+        {% endfor %}
+
+
+
+
+
+
+{% endblock %}
