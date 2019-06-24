@@ -1,7 +1,6 @@
 {% extends 'testpages/base_page.html' %}
 {% load qr_code %}
 
-# Загружаем шаблон и генератор кр кода
 
 {% block title %}
     QR-CODE
@@ -10,7 +9,8 @@
 {% block content %}
 
 
-    {% qr_from_text "http://127.0.0.1:8000/lecture/" size="L" %}
+
+        {% qr_from_text "http://127.0.0.1:8000/lecture/" size="L" %}
 
 
 
