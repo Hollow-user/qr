@@ -12,18 +12,24 @@
 {% block content %}
 
 
-        {% for lecture in lectures %}
+            {% for lecture in lectures %}
 
+                <form action="{% url 'lecture_url'  %}" method="post">
+                    {% csrf_token %}
 
-                <div class="card mt-5 ml-auto mr-auto" style="width: 18rem;">
+                     <div class="card mt-5 ml-auto mr-auto" style="width: 18rem;">
 
-      <div class="card-body">
-        <h5 class="card-title">{{ lecture.title }}</h5>
-        <p class="card-text"> {{ lecture.date}} </p>
-        <a href="{% url 'thx_url'%}" class="btn btn-primary"> Нажмите что-бы отметится({{lecture.visiters}})</a>
-      </div>
-    </div>
+                      <div class="card-body">
+                        <h5 class="card-title">{{ lecture.title }}</h5>
+                        <p class="card-text"> {{ lecture.date}} </p>
+                        <input type="submit"
+                               name="Лекция"
+                               value="{{lecture.id}}"
+                               class="btn btn-primary" />
+                      </div>
+                    </div>
 
+                </form>
 
 
 
