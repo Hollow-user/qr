@@ -2,10 +2,8 @@
 {% load qr_code %}
 
 
-
-
 {% block title %}
-    Site #1
+    Лекции
 {% endblock %}
 
 
@@ -22,24 +20,13 @@
                       <div class="card-body">
                         <h5 class="card-title">{{ lecture.title }}</h5>
                         <p class="card-text"> {{ lecture.date}} </p>
-                        <input type="submit"
-                               name="Лекция"
-                               value="{{lecture.id}}"
-                               class="btn btn-primary" />
+                       <input type="hidden" name="Лекция" value={{lecture.id}} />
+                        <button>Отметиться</button>
+
                       </div>
                     </div>
 
                 </form>
-
-
-
-
-
-        {% endfor %}
-
-
-
-
-
+            {% endfor %}
 
 {% endblock %}
