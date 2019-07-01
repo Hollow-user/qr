@@ -14,6 +14,7 @@ class Lecture(models.Model):
 
     title = models.CharField(max_length=50)
     date = models.DateField(auto_created=True)
+    count = models.PositiveIntegerField(default=0)
     students_come = models.ManyToManyField('Student', blank=True, related_name='students',)
 
     def __str__(self):
