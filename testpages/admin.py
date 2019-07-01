@@ -3,4 +3,5 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(Lecture) # Добавляем в админку управление лекциями
+admin.site.register(Students)
+admin.site.register(Lecture)
