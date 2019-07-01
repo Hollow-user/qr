@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:/MyProjects/.idea/MyProjects.iml" filepath="C:/MyProjects/.idea/MyProjects.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/qr.iml" filepath="$PROJECT_DIR$/.idea/qr.iml" />
     </modules>
   </component>

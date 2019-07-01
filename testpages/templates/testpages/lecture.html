@@ -9,24 +9,30 @@
 
 {% block content %}
 
+{% for lecture in lectures %}
 
-            {% for lecture in lectures %}
 
-                <form action="{% url 'lecture_url'  %}" method="post">
+<form action= "#" method="post">
                     {% csrf_token %}
 
-                     <div class="card mt-5 ml-auto mr-auto" style="width: 18rem;">
+                     <div class="card mt-3 ml-auto mr-auto " style="width: 18rem;">
 
                       <div class="card-body">
                         <h5 class="card-title">{{ lecture.title }}</h5>
-                        <p class="card-text"> {{ lecture.date}} </p>
-                       <input type="hidden" name="Лекция" value={{lecture.id}} />
-                        <button>Отметиться</button>
+                        <p class="card-text"> {{ lecture.date }}  </p>
+                       <input type="hidden" name="Lecture" value={{lecture.id}} />
+                        <button>Перейти</button>
 
                       </div>
                     </div>
 
                 </form>
-            {% endfor %}
+
+
+{% endfor %}
+
+
+
+
 
 {% endblock %}
