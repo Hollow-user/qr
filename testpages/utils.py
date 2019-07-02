@@ -1,0 +1,1 @@
+from django.shortcuts import render, redirectfrom django.shortcuts import get_object_or_404from django.http import HttpResponse, responsefrom .models import *class PageMixin:    template = None    def get(self, request):        return render(request, self.template)

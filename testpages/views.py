@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, response
 from django.views.generic import View
+from .utils import PageMixin
 from .models import *
 
 
@@ -92,16 +93,16 @@ def qr_generator(request, id):
     render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
 
 
-def thx_page(request):
+class ThxPage(PageMixin, View):
     """Функция для отображения страницы с благодарностью"""
-    return render(request, 'testpages/thx.html')
+    template = 'testpages/thx.html'
 
 
-def late_page(request):
+class LatePage(PageMixin, View):
     """Функция для отображения страницы с опозданием"""
-    return render(request, 'testpages/late.html')
+    template = 'testpages/late.html'
 
 
-def check_page(request):
+class CheckPage(PageMixin, View):
     """Функция для отображения страницы с отказом"""
-    return render(request, 'testpages/check.html')
+    template = 'testpages/check.html'
