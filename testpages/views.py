@@ -7,7 +7,7 @@ from .models import *
 
 
 class QrPage(View):
-    """Функция для отображения страницы с кр кодом"""
+    """Отображение страницы с кр кодом"""
     def get(self, request):
         lectures = reversed(Lecture.objects.all())
         return render(request, 'testpages/qr_page.html', context={'lectures': lectures})
@@ -19,7 +19,7 @@ class QrPage(View):
 
 
 class LecturePage(View):
-    """Функция для отображения страницы с лекциями"""
+    """Отображение страницы с лекциями"""
     def get(self, request):
         lectures = reversed(Lecture.objects.all())
         return render(request, 'testpages/lecture.html', context={'lectures': lectures})
@@ -31,7 +31,7 @@ class LecturePage(View):
 
 
 class TestIdPage(View):
-    """Функция для отображения страницы с лекцией"""
+    """Отображение страницы с лекцией"""
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
         students = Student.objects.all()
@@ -57,7 +57,7 @@ class TestIdPage(View):
 
 
 class StudentPage(View):
-    """Функция показывает список студентов """
+    """Отображение списка студентов """
     def get(self, request):
         students = Student.objects.all()
         return render(request, 'testpages/student.html', context={'students': students})
@@ -69,7 +69,7 @@ class StudentPage(View):
 
 
 class StudentIdPage(View):
-    """Функция показывает посещенные лекции студента """
+    """Список посещенных лекций студента """
     def get(self, request, id):
         lectures = get_object_or_404(Student, id__iexact=id).students.all()
         student = get_object_or_404(Student, id__iexact=id)
@@ -82,27 +82,27 @@ class StudentIdPage(View):
 
 
 def qr_id_page(request, id):
-    """Функция показывает qr code для определенной лекции """
+    """Отображение qr code для определенной лекции """
     ls = get_object_or_404(Lecture, id__iexact=id)
     qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
     return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
 
 
 def qr_generator(request, id):
-    """Функция для отображения кр кода для определенной лекции (только для страницы с самой лекцией"""
+    """Отображение кр кода для определенной лекции (только для страницы с самой лекцией)"""
     render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
 
 
 class ThxPage(PageMixin, View):
-    """Функция для отображения страницы с благодарностью"""
+    """Вывод страницы если студент отметился"""
     template = 'testpages/thx.html'
 
 
 class LatePage(PageMixin, View):
-    """Функция для отображения страницы с опозданием"""
+    """Вывод страницы если привышен лимит студентов"""
     template = 'testpages/late.html'
 
 
 class CheckPage(PageMixin, View):
-    """Функция для отображения страницы с отказом"""
+    """Вывод страницы если студент уже сегодня отмечался"""
     template = 'testpages/check.html'
