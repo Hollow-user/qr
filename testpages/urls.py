@@ -10,10 +10,10 @@ urlpatterns = [
     path('thx/', thx_page, name='thx_url'),
     path('check/', check_page, name='check_url'),
     path('lecture/', lecture_page, name='lecture_url'),
-    path('test/', test_page, name='test_url'),
     path('test/<int:id>/', test_id_page, name='test_id_page'),
     path('student', student_page, name='student_page'),
     path('student/<int:id>/', student_id_page, name='student_id_page'),
+    path('qr/<int:id>/', qr_id_page, name='qr_id_page'),
     path('late/', late_page, name='late_url'),
 
 

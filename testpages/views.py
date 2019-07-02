@@ -5,7 +5,13 @@ from .models import *
 
 def qr_page(request):
     """Функция для отображения страницы с кр кодом"""
-    return render(request, 'testpages/qr_page.html')
+    lectures = reversed(Lecture.objects.all())
+    if request.method == 'GET':
+        return render(request, 'testpages/qr_page.html', context={'lectures': lectures})
+    if request.method == 'POST':
+        a = request.POST
+        id = a['Lecture']
+        return redirect('qr_id_page', id)
 
 
 def lecture_page(request):
@@ -17,26 +23,6 @@ def lecture_page(request):
         a = request.POST
         id = a['Lecture']
         return redirect('test_id_page', id)
-
-
-def thx_page(request):
-    """Функция для отображения страницы с благодарностью"""
-    return render(request, 'testpages/thx.html')
-
-def late_page(request):
-    """Функция для отображения страницы с опозданием"""
-    return render(request, 'testpages/late.html')
-
-
-def check_page(request):
-    """Функция для отображения страницы с отказом"""
-    return render(request, 'testpages/check.html')
-
-
-def test_page(request):
-    """Функция для отображения страницы с тестом"""
-    ls = Lecture.objects.all()
-    return render(request, 'testpages/test.html', context={'ls': ls})
 
 
 def test_id_page(request, id):
@@ -64,19 +50,11 @@ def test_id_page(request, id):
                 return redirect('late_url')
 
 
-
-def qr_generator(request, id):
-   """Функция для отображения кр кода для определенной лекции"""
-   render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
-
-
 def student_page(request):
-
+    """Функция для отображения списка студентов"""
     students = Student.objects.all()
-
     if request.method == 'GET':
         return render(request, 'testpages/student.html', context={'students': students})
-
     if request.method == 'POST':
         a = request.POST
         id = a['Student']
@@ -85,15 +63,38 @@ def student_page(request):
 
 def student_id_page(request, id):
     """Функция показывает посещенные лекции студента """
-
-
     if request.method == 'GET':
-
         lectures = Student.objects.get(id__iexact=id).students.all()
         student = Student.objects.get(id__iexact=id)
-
         return render(request, 'testpages/student_id.html', context={'lectures': lectures, 'student': student})
     if request.method == 'POST':
         a = request.POST
         id = a['Lecture']
         return redirect('test_id_page', id)
+
+
+def qr_id_page(request, id):
+    """Функция показывает qr code для определенной лекции """
+    ls = Lecture.objects.get(id__iexact=id)
+    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
+    return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
+
+
+def qr_generator(request, id):
+    """Функция для отображения кр кода для определенной лекции (только для страницы с самой лекцией"""
+    render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
+
+
+def thx_page(request):
+    """Функция для отображения страницы с благодарностью"""
+    return render(request, 'testpages/thx.html')
+
+
+def late_page(request):
+    """Функция для отображения страницы с опозданием"""
+    return render(request, 'testpages/late.html')
+
+
+def check_page(request):
+    """Функция для отображения страницы с отказом"""
+    return render(request, 'testpages/check.html')
