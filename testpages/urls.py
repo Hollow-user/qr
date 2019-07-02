@@ -6,13 +6,13 @@ from .views import *
 
 """ пути к страницам """
 urlpatterns = [
-    path('', qr_page, name='qr_page_url'),
+    path('', QrPage.as_view(), name='qr_page_url'),
     path('thx/', thx_page, name='thx_url'),
     path('check/', check_page, name='check_url'),
-    path('lecture/', lecture_page, name='lecture_url'),
-    path('test/<int:id>/', test_id_page, name='test_id_page'),
-    path('student', student_page, name='student_page'),
-    path('student/<int:id>/', student_id_page, name='student_id_page'),
+    path('lecture/', LecturePage.as_view(), name='lecture_url'),
+    path('test/<int:id>/', TestIdPage.as_view(), name='test_id_page'),
+    path('student', StudentPage.as_view(), name='student_page'),
+    path('student/<int:id>/', StudentIdPage.as_view(), name='student_id_page'),
     path('qr/<int:id>/', qr_id_page, name='qr_id_page'),
     path('late/', late_page, name='late_url'),
 

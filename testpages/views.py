@@ -1,37 +1,42 @@
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, response
+from django.views.generic import View
 from .models import *
 
 
-def qr_page(request):
+class QrPage(View):
     """Функция для отображения страницы с кр кодом"""
-    lectures = reversed(Lecture.objects.all())
-    if request.method == 'GET':
+    def get(self, request):
+        lectures = reversed(Lecture.objects.all())
         return render(request, 'testpages/qr_page.html', context={'lectures': lectures})
-    if request.method == 'POST':
+
+    def post(self, request):
         a = request.POST
         id = a['Lecture']
         return redirect('qr_id_page', id)
 
 
-def lecture_page(request):
+class LecturePage(View):
     """Функция для отображения страницы с лекциями"""
-    lectures = reversed(Lecture.objects.all())
-    if request.method == 'GET':
+    def get(self, request):
+        lectures = reversed(Lecture.objects.all())
         return render(request, 'testpages/lecture.html', context={'lectures': lectures})
-    if request.method == 'POST':
+
+    def post(self, request):
         a = request.POST
         id = a['Lecture']
         return redirect('test_id_page', id)
 
 
-def test_id_page(request, id):
-    """Функция которая проверяет отметился ли студент или отмечает его"""
-    ls = Lecture.objects.get(id__iexact=id)
-    students = Student.objects.all()
-    if request.method == 'GET':
+class TestIdPage(View):
+    """Функция для отображения страницы с лекцией"""
+    def get(self, request, id):
+        ls = get_object_or_404(Lecture, id__iexact=id)
+        students = Student.objects.all()
         return render(request, 'testpages/test.html', context={'ls': ls, 'students': students, 'qr': request.build_absolute_uri()})
-    if request.method == 'POST':
+
+    def post(self, request, id):
         if request.session.get('check', False):
             return redirect('check_url')
         else:
@@ -40,8 +45,8 @@ def test_id_page(request, id):
                 print(request.COOKIES)
                 request.session.set_expiry(86400)
                 a = request.POST
-                b = Student.objects.get(id__iexact=a['Student'])
-                c = Lecture.objects.get(id__iexact=id)
+                b = get_object_or_404(Student, id__iexact=a['Student'])
+                c = get_object_or_404(Lecture, id__iexact=id)
                 c.students_come.add(b)
                 return redirect('thx_url')
             else:
@@ -50,24 +55,26 @@ def test_id_page(request, id):
                 return redirect('late_url')
 
 
-def student_page(request):
-    """Функция для отображения списка студентов"""
-    students = Student.objects.all()
-    if request.method == 'GET':
+class StudentPage(View):
+    """Функция показывает список студентов """
+    def get(self, request):
+        students = Student.objects.all()
         return render(request, 'testpages/student.html', context={'students': students})
-    if request.method == 'POST':
+
+    def post(self, request):
         a = request.POST
         id = a['Student']
         return redirect('student_id_page', id)
 
 
-def student_id_page(request, id):
+class StudentIdPage(View):
     """Функция показывает посещенные лекции студента """
-    if request.method == 'GET':
-        lectures = Student.objects.get(id__iexact=id).students.all()
-        student = Student.objects.get(id__iexact=id)
+    def get(self, request, id):
+        lectures = get_object_or_404(Student, id__iexact=id).students.all()
+        student = get_object_or_404(Student, id__iexact=id)
         return render(request, 'testpages/student_id.html', context={'lectures': lectures, 'student': student})
-    if request.method == 'POST':
+
+    def post(self, request, id):
         a = request.POST
         id = a['Lecture']
         return redirect('test_id_page', id)
@@ -75,7 +82,7 @@ def student_id_page(request, id):
 
 def qr_id_page(request, id):
     """Функция показывает qr code для определенной лекции """
-    ls = Lecture.objects.get(id__iexact=id)
+    ls = get_object_or_404(Lecture, id__iexact=id)
     qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
     return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
 
