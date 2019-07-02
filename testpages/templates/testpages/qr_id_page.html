@@ -1,0 +1,1 @@
+{% extends 'testpages/base_page.html' %}{% load qr_code %}{% block title %}    QR-Code{% endblock %}{% block content %}<h4 align="center" >{{ls.title}}</h4><h5 align="center" >{{ls.date}}</h5><p align="center" > {% qr_from_text qr size="H" %} </p>{% endblock %}
