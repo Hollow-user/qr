@@ -81,18 +81,6 @@ class StudentIdPage(View):
         return redirect('test_id_page', id)
 
 
-def qr_id_page(request, id):
-    """Отображение qr code для определенной лекции """
-    ls = get_object_or_404(Lecture, id__iexact=id)
-    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
-    return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
-
-
-def qr_generator(request, id):
-    """Отображение кр кода для определенной лекции (только для страницы с самой лекцией)"""
-    render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
-
-
 class ThxPage(PageMixin, View):
     """Вывод страницы если студент отметился"""
     template = 'testpages/thx.html'
@@ -106,3 +94,15 @@ class LatePage(PageMixin, View):
 class CheckPage(PageMixin, View):
     """Вывод страницы если студент уже сегодня отмечался"""
     template = 'testpages/check.html'
+
+
+def qr_id_page(request, id):
+    """Отображение qr code для определенной лекции """
+    ls = get_object_or_404(Lecture, id__iexact=id)
+    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
+    return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
+
+
+def qr_generator(request, id):
+    """Отображение кр кода для определенной лекции (только для страницы с самой лекцией)"""
+    render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
