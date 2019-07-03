@@ -7,7 +7,11 @@ class Student(models.Model):
     name = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
-        return str(self.name) + ' ' + '(' + str(self.id) + ')'
+        return '{}'.format(self.name)
+
+    class Meta:
+        verbose_name = 'Выбрать всех студентов'
+        verbose_name_plural = 'Студенты'
 
 
 class Lecture(models.Model):
@@ -22,3 +26,7 @@ class Lecture(models.Model):
 
     def get_absolute_url(self):
         return reverse('lecture_detail_url', kwargs={'id': self.id})
+
+    class Meta:
+        verbose_name = 'Выбрать все лекции'
+        verbose_name_plural = 'Лекции'

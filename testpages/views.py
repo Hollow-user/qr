@@ -9,12 +9,12 @@ from .models import *
 class QrPage(View):
     """Отображение страницы с кр кодом"""
     def get(self, request):
-        lectures = reversed(Lecture.objects.all())
+        lectures = Lecture.objects.all()
         return render(request, 'testpages/qr_page.html', context={'lectures': lectures})
 
     def post(self, request):
         a = request.POST
-        id = a['Lecture']
+        id = a['Lecture']  # Поменять название id!!!
         return redirect('qr_id_page', id)
 
 
@@ -43,7 +43,6 @@ class TestIdPage(View):
         else:
             if len(Lecture.objects.values('students_come').filter(id__iexact=id)) < Lecture.objects.get(id=id).count:
                 request.session['check'] = True
-                print(request.COOKIES)
                 request.session.set_expiry(86400)
                 a = request.POST
                 b = get_object_or_404(Student, id__iexact=a['Student'])
@@ -99,7 +98,7 @@ class CheckPage(PageMixin, View):
 def qr_id_page(request, id):
     """Отображение qr code для определенной лекции """
     ls = get_object_or_404(Lecture, id__iexact=id)
-    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'
+    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'  #Улучшить
     return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
 
 
