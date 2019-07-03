@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, response
+from django.urls import reverse
+
 from django.views.generic import View
 from datetime import date
 from .utils import PageMixin
@@ -11,7 +13,8 @@ class QrPage(View):
     """Отображение страницы с кр кодом"""
     def get(self, request):
         lectures = Lecture.objects.filter(date=date.today())
-        return render(request, 'testpages/qr_page.html', context={'lectures': lectures})
+        return render(request, 'testpages/qr_page.html',
+                      context={'lectures': lectures})
 
     def post(self, request):
         a = request.POST
@@ -23,7 +26,8 @@ class LecturePage(View):
     """Отображение страницы с лекциями"""
     def get(self, request):
         lectures = Lecture.objects.all().order_by('-date')[:20]
-        return render(request, 'testpages/lecture.html', context={'lectures': lectures})
+        return render(request, 'testpages/lecture.html',
+                      context={'lectures': lectures})
 
     def post(self, request):
         a = request.POST
@@ -35,8 +39,9 @@ class TestIdPage(View):
     """Отображение страницы с лекцией"""
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
-        students = Student.objects.all()
-        return render(request, 'testpages/test.html', context={'ls': ls, 'students': students, 'qr': request.build_absolute_uri()})
+        students = Student.objects.filter(active=True)
+        return render(request, 'testpages/test.html',
+                      context={'ls': ls, 'students': students})
 
     def post(self, request, id):
         if Lecture.objects.dates('date', 'day').get(id__iexact=id) != date.today():
@@ -63,7 +68,8 @@ class StudentPage(View):
     """Отображение списка студентов """
     def get(self, request):
         students = Student.objects.all().order_by('name')
-        return render(request, 'testpages/student.html', context={'students': students})
+        return render(request, 'testpages/student.html',
+                      context={'students': students})
 
     def post(self, request):
         a = request.POST
@@ -76,7 +82,8 @@ class StudentIdPage(View):
     def get(self, request, id):
         lectures = get_object_or_404(Student, id__iexact=id).students.all()
         student = get_object_or_404(Student, id__iexact=id)
-        return render(request, 'testpages/student_id.html', context={'lectures': lectures, 'student': student})
+        return render(request, 'testpages/student_id.html',
+                      context={'lectures': lectures, 'student': student})
 
     def post(self, request, id):
         a = request.POST
@@ -107,10 +114,7 @@ class CheckPage(PageMixin, View):
 def qr_id_page(request, id):
     """Отображение qr code для определенной лекции """
     ls = get_object_or_404(Lecture, id__iexact=id)
-    qr = 'http://127.0.0.1:8000/test/' + str(id) + '/'  #Улучшить
-    return render(request, 'testpages/qr_id_page.html', context={'qr': qr, 'ls': ls})
+    qr = 'http://127.0.0.1:8000/test/{}/'.format(id)
+    return render(request, 'testpages/qr_id_page.html',
+                  context={'qr': qr, 'ls': ls})
 
-
-def qr_generator(request, id):
-    """Отображение кр кода для определенной лекции (только для страницы с самой лекцией)"""
-    render(request, 'test_id_page', context={'link': request.build_absolute_uri('test/')})
