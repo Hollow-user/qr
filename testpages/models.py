@@ -10,7 +10,7 @@ class Student(models.Model):
         return '{}'.format(self.name)
 
     class Meta:
-        verbose_name = 'Выбрать всех студентов'
+        verbose_name = 'Студент'
         verbose_name_plural = 'Студенты'
 
 
@@ -28,5 +28,5 @@ class Lecture(models.Model):
         return reverse('lecture_detail_url', kwargs={'id': self.id})
 
     class Meta:
-        verbose_name = 'Выбрать все лекции'
+        verbose_name = 'Лекция'
         verbose_name_plural = 'Лекции'

@@ -15,6 +15,7 @@ urlpatterns = [
     path('student/<int:id>/', StudentIdPage.as_view(), name='student_id_page'),
     path('qr/<int:id>/', qr_id_page, name='qr_id_page'),
     path('late/', LatePage.as_view(), name='late_url'),
+    path('datelate/', DateLatePage.as_view(), name='date_late_url'),
 
 
 ]
