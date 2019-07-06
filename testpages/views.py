@@ -32,15 +32,15 @@ class LecturePage(View):
     def post(self, request):
         a = request.POST
         lect_id = a['Lecture']
-        return redirect('test_id_page', lect_id)
+        return redirect('lecture_id_page', lect_id)
 
 
-class TestIdPage(View):
+class LectureIdPage(View):
     """Отображение страницы с лекцией"""
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
         students = Student.objects.filter(active=True)
-        return render(request, 'testpages/test.html',
+        return render(request, 'testpages/lecture_id.html',
                       context={'ls': ls, 'students': students})
 
     def post(self, request, id):
@@ -59,8 +59,6 @@ class TestIdPage(View):
                     c.students_come.add(b)
                     return redirect('thx_url')
                 else:
-                    chislo = len(Lecture.objects.values('students_come').filter(id__iexact=id))
-                    print(chislo)
                     return redirect('late_url')
 
 
@@ -88,33 +86,33 @@ class StudentIdPage(View):
     def post(self, request, id):
         a = request.POST
         student_id = a['Lecture']
-        return redirect('test_id_page', student_id)
+        return redirect('lecture_id_page', student_id)
 
 
 class ThxPage(PageMixin, View):
     """Вывод страницы если студент отметился"""
-    template = 'testpages/thx.html'
+    message = 'Спасибо что отметились'
 
 
 class LatePage(PageMixin, View):
     """Вывод страницы если привышен лимит студентов"""
-    template = 'testpages/late.html'
+    message = 'Количество пришедших слушателей уже максимально'
 
 
 class DateLatePage(PageMixin, View):
     """Вывод страницы если студент пытается отметиться за прошедшую дату"""
-    template = 'testpages/date_late.html'
+    message = 'Вы пытаетесь отметится за прошедшую дату'
 
 
 class CheckPage(PageMixin, View):
     """Вывод страницы если студент уже сегодня отмечался"""
-    template = 'testpages/check.html'
+    message = 'Вы уже отмечались сегодня'
 
 
 def qr_id_page(request, id):
     """Отображение qr code для определенной лекции """
     ls = get_object_or_404(Lecture, id__iexact=id)
-    qr = 'http://127.0.0.1:8000/test/{}/'.format(id)
+    qr = request.build_absolute_uri('lecture/')
     return render(request, 'testpages/qr_id_page.html',
                   context={'qr': qr, 'ls': ls})
 
