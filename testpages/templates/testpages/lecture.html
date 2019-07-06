@@ -2,6 +2,7 @@
 {% load qr_code %}
 
 
+
 {% block title %}
     Лекции
 {% endblock %}
@@ -12,22 +13,7 @@
 {% for lecture in lectures %}
 
 
-<form action= "#" method="post">
-                    {% csrf_token %}
-
-                     <div class="card mt-3 ml-auto mr-auto " style="width: 18rem;">
-
-                      <div class="card-body">
-                        <h5 class="card-title">{{ lecture.title }}</h5>
-                        <p class="card-text"> {{ lecture.date }}  </p>
-                       <input type="hidden" name="Lecture" value={{lecture.id}} />
-                        <button>Перейти</button>
-
-
-                      </div>
-                    </div>
-
-                </form>
+{% include 'testpages/includes/card.html' %}
 
 
 {% endfor %}
