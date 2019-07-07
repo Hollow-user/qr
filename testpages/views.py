@@ -1,8 +1,5 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, response
-from django.urls import reverse
-
 from django.views.generic import View
 from datetime import date
 from .utils import PageMixin
@@ -39,7 +36,7 @@ class LectureIdPage(View):
     """Отображение страницы с лекцией"""
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
-        students = Student.objects.filter(active=True)
+        students = Student.objects.filter(active=True, group=ls.group.id)
         return render(request, 'testpages/lecture_id.html',
                       context={'ls': ls, 'students': students})
 
@@ -50,7 +47,8 @@ class LectureIdPage(View):
             if request.session.get('check', False):
                 return redirect('check_url')
             else:
-                if Lecture.objects.values('students_come').filter(id__iexact=id).count() < Lecture.objects.get(id=id).count:
+                if Lecture.objects.values('students_come').filter(id__iexact=id).count()\
+                        < Lecture.objects.get(id=id).group.student_set.values().count():
                     request.session['check'] = True
                     request.session.set_expiry(86400)
                     a = request.POST
@@ -65,7 +63,7 @@ class LectureIdPage(View):
 class StudentPage(View):
     """Отображение списка студентов """
     def get(self, request):
-        students = Student.objects.all().order_by('name')
+        students = Student.objects.all().order_by('group', 'name')
         return render(request, 'testpages/student.html',
                       context={'students': students})
 
@@ -89,6 +87,14 @@ class StudentIdPage(View):
         return redirect('lecture_id_page', student_id)
 
 
+def qr_id_page(request, id):
+    """Отображение qr code для определенной лекции """
+    ls = get_object_or_404(Lecture, id__iexact=id)
+    qr = request.build_absolute_uri('lecture/')
+    return render(request, 'testpages/qr_id_page.html',
+                  context={'qr': qr, 'ls': ls})
+
+
 class ThxPage(PageMixin, View):
     """Вывод страницы если студент отметился"""
     message = 'Спасибо что отметились'
@@ -109,10 +115,5 @@ class CheckPage(PageMixin, View):
     message = 'Вы уже отмечались сегодня'
 
 
-def qr_id_page(request, id):
-    """Отображение qr code для определенной лекции """
-    ls = get_object_or_404(Lecture, id__iexact=id)
-    qr = request.build_absolute_uri('lecture/')
-    return render(request, 'testpages/qr_id_page.html',
-                  context={'qr': qr, 'ls': ls})
+
 
