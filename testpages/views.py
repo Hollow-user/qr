@@ -37,8 +37,9 @@ class LectureIdPage(View):
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
         students = Student.objects.filter(active=True, group=ls.group.id)
+        count = Lecture.objects.get(id=id).group.student_set.filter(active=True).values().count()
         return render(request, 'testpages/lecture_id.html',
-                      context={'ls': ls, 'students': students})
+                      context={'ls': ls, 'students': students, 'count': count})
 
     def post(self, request, id):
         if Lecture.objects.dates('date', 'day').get(id__iexact=id) != date.today():
@@ -48,7 +49,8 @@ class LectureIdPage(View):
                 return redirect('check_url')
             else:
                 if Lecture.objects.values('students_come').filter(id__iexact=id).count()\
-                        < Lecture.objects.get(id=id).group.student_set.values().count():
+                        < \
+                   Lecture.objects.get(id=id).group.student_set.filter(active=True).values().count():
                     request.session['check'] = True
                     request.session.set_expiry(86400)
                     a = request.POST
