@@ -10,7 +10,7 @@
 
 {% block content %}
 
-{% for lecture in lectures %}
+{% for lecture in lectures.object_list %}
 
 
 {% include 'testpages/includes/card.html' %}
@@ -18,6 +18,33 @@
 
 {% endfor %}
 
+
+    <nav aria-label="">
+        <ul class="pagination ">
+            <li class="page-item ">
+                <a class="page-link" href="{{prev_url}}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+
+            {%for n in lectures.paginator.page_range%}
+            {% if lectures.number == n%}
+
+             <li class="page-item active" aria-current="page">
+                <a class="page-link" href="?page={{n}}">{{n}} <span class="sr-only">(current)</span></a>
+            </li>
+
+            {% else%}
+
+            <li class="page-item">
+                <a class="page-link" href="?page={{n}}">{{n}}</a>
+            </li>
+            {%endif%}
+            {%endfor%}
+
+            <li class="page-item">
+                <a class="page-link" href="{{next_url}}">Next</a>
+            </li>
+        </ul>
+    </nav>
 
 
 
