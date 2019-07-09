@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
+from django.core.paginator import Paginator
 from datetime import date
 from .utils import PageMixin
 from .models import *
@@ -22,9 +23,25 @@ class QrPage(View):
 class LecturePage(View):
     """Отображение страницы с лекциями"""
     def get(self, request):
-        lectures = Lecture.objects.all().order_by('-date')[:20]
+        lectures = Lecture.objects.all()
+        pagitanor = Paginator(lectures, 4)
+        page_number = request.GET.get('page', 1)
+        page = pagitanor.get_page(page_number)
+        if page.has_previous():
+            prev_url = '?page={}'.format(page.previous_page_number())
+        else:
+            prev_url = ''
+        if page.has_next():
+            next_url = '?page={}'.format(page.next_page_number())
+        else:
+            next_url = ''
+        context = {
+            'lectures': page,
+            'prev_url': prev_url,
+            'next_url': next_url
+        }
         return render(request, 'testpages/lecture.html',
-                      context={'lectures': lectures})
+                      context=context)
 
     def post(self, request):
         a = request.POST
@@ -65,9 +82,25 @@ class LectureIdPage(View):
 class StudentPage(View):
     """Отображение списка студентов """
     def get(self, request):
-        students = Student.objects.all().order_by('group', 'name')
+        students = Student.objects.all()
+        pagitanor = Paginator(students, 4)
+        page_number = request.GET.get('page', 1)
+        page = pagitanor.get_page(page_number)
+        if page.has_previous():
+            prev_url = '?page={}'.format(page.previous_page_number())
+        else:
+            prev_url = ''
+        if page.has_next():
+            next_url = '?page={}'.format(page.next_page_number())
+        else:
+            next_url = ''
+        context = {
+            'students': page,
+            'prev_url': prev_url,
+            'next_url': next_url
+        }
         return render(request, 'testpages/student.html',
-                      context={'students': students})
+                      context=context)
 
     def post(self, request):
         a = request.POST
