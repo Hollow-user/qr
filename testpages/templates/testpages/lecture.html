@@ -18,11 +18,11 @@
 
 {% endfor %}
 
-
+<p>{% if is_paginator %}
     <nav aria-label="">
-        <ul class="pagination ">
+        <ul class="pagination justify-content-center">
             <li class="page-item ">
-                <a class="page-link" href="{{prev_url}}" tabindex="-1" aria-disabled="true">Previous</a>
+                <a class="page-link" href="{{prev_url}}" tabindex="-1" aria-disabled="true">Назад</a>
             </li>
 
             {%for n in lectures.paginator.page_range%}
@@ -31,21 +31,19 @@
              <li class="page-item active" aria-current="page">
                 <a class="page-link" href="?page={{n}}">{{n}} <span class="sr-only">(current)</span></a>
             </li>
-
             {% else%}
-
             <li class="page-item">
                 <a class="page-link" href="?page={{n}}">{{n}}</a>
             </li>
             {%endif%}
-            {%endfor%}
 
+            {%endfor%}
             <li class="page-item">
-                <a class="page-link" href="{{next_url}}">Next</a>
+                <a class="page-link" href="{{next_url}}">Вперед</a>
             </li>
         </ul>
     </nav>
-
+    {% endif %}</p>
 
 
 
