@@ -15,9 +15,7 @@ class QrPage(View):
                       context={'lectures': lectures})
 
     def post(self, request):
-        a = request.POST
-        lect_id = a['Lecture']
-        return redirect('qr_id_page', lect_id)
+        return redirect('qr_id_page', request.POST['Lecture'])
 
 
 class LecturePage(View):
@@ -27,6 +25,7 @@ class LecturePage(View):
         pagitanor = Paginator(lectures, 4)
         page_number = request.GET.get('page', 1)
         page = pagitanor.get_page(page_number)
+        is_paginator = page.has_other_pages()
         if page.has_previous():
             prev_url = '?page={}'.format(page.previous_page_number())
         else:
@@ -38,15 +37,15 @@ class LecturePage(View):
         context = {
             'lectures': page,
             'prev_url': prev_url,
-            'next_url': next_url
+            'next_url': next_url,
+            'is_paginator': is_paginator
         }
         return render(request, 'testpages/lecture.html',
                       context=context)
 
     def post(self, request):
         a = request.POST
-        lect_id = a['Lecture']
-        return redirect('lecture_id_page', lect_id)
+        return redirect('lecture_id_page', a['Lecture'])
 
 
 class LectureIdPage(View):
@@ -86,6 +85,7 @@ class StudentPage(View):
         pagitanor = Paginator(students, 4)
         page_number = request.GET.get('page', 1)
         page = pagitanor.get_page(page_number)
+        is_paginator = page.has_other_pages()
         if page.has_previous():
             prev_url = '?page={}'.format(page.previous_page_number())
         else:
@@ -97,15 +97,14 @@ class StudentPage(View):
         context = {
             'students': page,
             'prev_url': prev_url,
-            'next_url': next_url
+            'next_url': next_url,
+            'is_paginator': is_paginator
         }
         return render(request, 'testpages/student.html',
                       context=context)
 
     def post(self, request):
-        a = request.POST
-        student_id = a['Student']
-        return redirect('student_id_page', student_id)
+        return redirect('student_id_page', request.POST['Student'])
 
 
 class StudentIdPage(View):
@@ -117,9 +116,7 @@ class StudentIdPage(View):
                       context={'lectures': lectures, 'student': student})
 
     def post(self, request, id):
-        a = request.POST
-        student_id = a['Lecture']
-        return redirect('lecture_id_page', student_id)
+        return redirect('lecture_id_page', request.POST['Lecture'])
 
 
 def qr_id_page(request, id):
