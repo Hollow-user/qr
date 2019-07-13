@@ -4,10 +4,10 @@ from django.shortcuts import reverse
 
 class Group(models.Model):
     """ Модель группа"""
-    name = models.PositiveIntegerField(default=0)
+    name = models.CharField(max_length=30, unique=True)
 
     def __str__(self):
-        return 'Группа №{}'.format(self.name)
+        return 'Группа {}'.format(self.name)
 
     class Meta:
         verbose_name = 'Группа'
@@ -22,8 +22,7 @@ class Lecture(models.Model):
                                            related_name='students',)
     group = models.ForeignKey(
         Group,
-        on_delete=models.SET_NULL,
-        null=True, blank=True
+        on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -32,14 +31,16 @@ class Lecture(models.Model):
     def group_admin(self):
         return '{}'.format(self.group)
     group_admin.short_description = 'Группа'
+    group_admin.admin_order_field = 'group'
 
     def title_admin(self):
         return '{}'.format(self.title)
     title_admin.short_description = 'Лекция'
 
     def date_admin(self):
-        return '{}'.format(self.date)
+        return self.date
     date_admin.short_description = 'Дата'
+    date_admin.admin_order_field = 'date'
 
     def stud_come(self):
         """ Отображение числа пришедших студентов из группы"""
@@ -63,8 +64,7 @@ class Student(models.Model):
     active = models.BooleanField(default=True)
     group = models.ForeignKey(
         Group,
-        on_delete=models.SET_NULL,
-        null=True, blank=True
+        on_delete=models.CASCADE,
     )
 
     def __str__(self):
@@ -73,17 +73,20 @@ class Student(models.Model):
     def name_admin(self):
         return '{}'.format(self.name)
     name_admin.short_description = 'Студент'
+    name_admin.admin_order_field = 'name'
 
     def group_admin(self):
         return '{}'.format(self.group)
     group_admin.short_description = 'Группа'
+    group_admin.admin_order_field = 'group'
 
     def active_admin(self):
-        if self.active :
+        if self.active:
             return 'Да'
         else:
             return 'Нет'
     active_admin.short_description = 'Активный'
+    active_admin.admin_order_field = 'active'
 
     class Meta:
         verbose_name = 'Студента'
