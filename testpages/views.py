@@ -53,29 +53,23 @@ class LectureIdPage(View):
     def get(self, request, id):
         ls = get_object_or_404(Lecture, id__iexact=id)
         students = Student.objects.filter(active=True, group=ls.group.id)
-        count = Lecture.objects.get(id=id).group.student_set.filter(active=True).values().count()
         return render(request, 'testpages/lecture_id.html',
-                      context={'ls': ls, 'students': students, 'count': count})
+                      context={'ls': ls, 'students': students})
 
     def post(self, request, id):
-        if Lecture.objects.dates('date', 'day').get(id__iexact=id) != date.today():
+        if Lecture.objects.dates('date', 'day').get(id=id) != date.today():
             return redirect('date_late_url')
         else:
             if request.session.get('check', False):
                 return redirect('check_url')
             else:
-                if Lecture.objects.values('students_come').filter(id__iexact=id).count()\
-                        < \
-                   Lecture.objects.get(id=id).group.student_set.filter(active=True).values().count():
-                    request.session['check'] = True
-                    request.session.set_expiry(86400)
-                    a = request.POST
-                    b = get_object_or_404(Student, id__iexact=a['Student'])
-                    c = get_object_or_404(Lecture, id__iexact=id)
-                    c.students_come.add(b)
-                    return redirect('thx_url')
-                else:
-                    return redirect('late_url')
+                request.session['check'] = True
+                request.session.set_expiry(86400)
+                a = request.POST
+                b = get_object_or_404(Student, id__iexact=a['Student'])
+                c = get_object_or_404(Lecture, id__iexact=id)
+                c.students_come.add(b)
+                return redirect('thx_url')
 
 
 class StudentPage(View):
@@ -112,8 +106,25 @@ class StudentIdPage(View):
     def get(self, request, id):
         lectures = get_object_or_404(Student, id__iexact=id).students.all()
         student = get_object_or_404(Student, id__iexact=id)
+        pagitanor = Paginator(lectures, 4)
+        page_number = request.GET.get('page', 1)
+        page = pagitanor.get_page(page_number)
+        is_paginator = page.has_other_pages()
+        if page.has_previous():
+            prev_url = '?page={}'.format(page.previous_page_number())
+        else:
+            prev_url = ''
+        if page.has_next():
+            next_url = '?page={}'.format(page.next_page_number())
+        else:
+            next_url = ''
         return render(request, 'testpages/student_id.html',
-                      context={'lectures': lectures, 'student': student})
+                      context={'student': student,
+                               'lectures': page,
+                               'prev_url': prev_url,
+                               'next_url': next_url,
+                               'is_paginator': is_paginator
+                               })
 
     def post(self, request, id):
         return redirect('lecture_id_page', request.POST['Lecture'])
@@ -130,11 +141,6 @@ def qr_id_page(request, id):
 class ThxPage(PageMixin, View):
     """Вывод страницы если студент отметился"""
     message = 'Спасибо что отметились'
-
-
-class LatePage(PageMixin, View):
-    """Вывод страницы если привышен лимит студентов"""
-    message = 'Количество пришедших слушателей уже максимально'
 
 
 class DateLatePage(PageMixin, View):

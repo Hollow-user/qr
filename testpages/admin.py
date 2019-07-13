@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
+# Настройка отображения моделей в админке
 
 
 class LectureAdmin(admin.ModelAdmin):
@@ -23,6 +23,8 @@ class StudentAdmin(admin.ModelAdmin):
                  ]
 
     list_display = ('name_admin', 'group_admin', 'active_admin')
+
+# Регистрация моделей в админке
 
 
 admin.site.register(Student, StudentAdmin)
