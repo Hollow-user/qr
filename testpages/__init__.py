@@ -1,1 +1,1 @@
-default_app_config = 'testpages.apps.TestpagesConfig'
+default_app_config = 'testpages.apps.TestPagesConfig'

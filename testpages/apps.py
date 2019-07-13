@@ -1,6 +1,8 @@
 from django.apps import AppConfig
 
+# Настройка отображения названия приложения в админке
 
-class TestpagesConfig(AppConfig):
+
+class TestPagesConfig(AppConfig):
     name = 'testpages'
     verbose_name = "Генератор QR кода"

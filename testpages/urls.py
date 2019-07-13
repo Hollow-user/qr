@@ -1,5 +1,4 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 
 
 from .views import *
@@ -12,7 +11,6 @@ urlpatterns = [
     path('qr/<int:id>/lecture/', LectureIdPage.as_view(), name='lecture_id_page'),
     path('student', StudentPage.as_view(), name='student_page'),
     path('student/<int:id>/', StudentIdPage.as_view(), name='student_id_page'),
-    path('late/', LatePage.as_view(), name='late_url'),
     path('datelate/', DateLatePage.as_view(), name='date_late_url'),
     path('thx/', ThxPage.as_view(), name='thx_url'),
     path('check/', CheckPage.as_view(), name='check_url'),

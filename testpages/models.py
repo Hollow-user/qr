@@ -3,7 +3,7 @@ from django.shortcuts import reverse
 
 
 class Group(models.Model):
-
+    """ Модель группа"""
     name = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -15,7 +15,7 @@ class Group(models.Model):
 
 
 class Lecture(models.Model):
-
+    """ Модель лекция"""
     title = models.CharField(max_length=50)
     date = models.DateField(auto_created=True)
     students_come = models.ManyToManyField('Student', blank=True,
@@ -42,6 +42,7 @@ class Lecture(models.Model):
     date_admin.short_description = 'Дата'
 
     def stud_come(self):
+        """ Отображение числа пришедших студентов из группы"""
         a = self.students_come.count()
         b = self.group.student_set.filter(active=True).values().count()
         return str(a) + ' из ' + str(b)
@@ -57,7 +58,7 @@ class Lecture(models.Model):
 
 
 class Student(models.Model):
-
+    """ Модель студент"""
     name = models.CharField(max_length=150, unique=True)
     active = models.BooleanField(default=True)
     group = models.ForeignKey(
