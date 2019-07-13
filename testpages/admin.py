@@ -12,6 +12,7 @@ class LectureAdmin(admin.ModelAdmin):
         ('Выберите группу', {'fields': ['group']})
                  ]
     list_display = ('title_admin', 'date_admin', 'group_admin', 'stud_come')
+    search_fields = ['title']
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -23,10 +24,16 @@ class StudentAdmin(admin.ModelAdmin):
                  ]
 
     list_display = ('name_admin', 'group_admin', 'active_admin')
+    search_fields = ['name']
+
+
+class GroupAdmin(admin.ModelAdmin):
+
+    search_fields = ['name']
 
 # Регистрация моделей в админке
 
 
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Group)
+admin.site.register(Group, GroupAdmin)
 admin.site.register(Lecture, LectureAdmin)
