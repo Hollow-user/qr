@@ -4,10 +4,17 @@ from django.shortcuts import reverse
 
 class Group(models.Model):
     """ Модель группа"""
-    name = models.CharField(max_length=30, unique=True)
+    name = models.CharField(max_length=30, unique=True, verbose_name='Группа')
 
     def __str__(self):
         return 'Группа {}'.format(self.name)
+
+    def count_group(self):
+        return self.student_set.count()
+    count_group.short_description = 'Количество студентов'
+
+    def stud_admin(self):
+        return self.student_set
 
     class Meta:
         verbose_name = 'Группа'
@@ -16,31 +23,17 @@ class Group(models.Model):
 
 class Lecture(models.Model):
     """ Модель лекция"""
-    title = models.CharField(max_length=50)
-    date = models.DateField(auto_created=True)
+    title = models.CharField(max_length=50, verbose_name='Лекция')
+    date = models.DateField(auto_created=True, verbose_name='Дата')
     students_come = models.ManyToManyField('Student', blank=True,
                                            related_name='students',)
     group = models.ForeignKey(
-        Group,
+        Group, verbose_name='Группа',
         on_delete=models.CASCADE
     )
 
     def __str__(self):
         return '{}'.format(self.title)
-
-    def group_admin(self):
-        return '{}'.format(self.group)
-    group_admin.short_description = 'Группа'
-    group_admin.admin_order_field = 'group'
-
-    def title_admin(self):
-        return '{}'.format(self.title)
-    title_admin.short_description = 'Лекция'
-
-    def date_admin(self):
-        return self.date
-    date_admin.short_description = 'Дата'
-    date_admin.admin_order_field = 'date'
 
     def stud_come(self):
         """ Отображение числа пришедших студентов из группы"""
@@ -60,25 +53,15 @@ class Lecture(models.Model):
 
 class Student(models.Model):
     """ Модель студент"""
-    name = models.CharField(max_length=150, unique=True)
-    active = models.BooleanField(default=True)
+    name = models.CharField(max_length=150, unique=True, verbose_name='Имя')
+    active = models.BooleanField(default=True, verbose_name='Активность')
     group = models.ForeignKey(
-        Group,
+        Group, verbose_name='Группа',
         on_delete=models.CASCADE,
     )
 
     def __str__(self):
         return '{}'.format(self.name)
-
-    def name_admin(self):
-        return '{}'.format(self.name)
-    name_admin.short_description = 'Студент'
-    name_admin.admin_order_field = 'name'
-
-    def group_admin(self):
-        return '{}'.format(self.group)
-    group_admin.short_description = 'Группа'
-    group_admin.admin_order_field = 'group'
 
     def active_admin(self):
         if self.active:
