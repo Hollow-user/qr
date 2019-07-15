@@ -11,8 +11,9 @@ class LectureAdmin(admin.ModelAdmin):
         ('Введите дату', {'fields': ['date']}),
         ('Выберите группу', {'fields': ['group']})
                  ]
-    list_display = ('title_admin', 'date_admin', 'group_admin', 'stud_come')
+    list_display = ('title', 'date', 'group', 'stud_come')
     search_fields = ['title']
+    list_filter = ['title', 'date', 'group']
 
 
 class StudentAdmin(admin.ModelAdmin):
@@ -23,13 +24,20 @@ class StudentAdmin(admin.ModelAdmin):
         ('Отметьте является ли студент активным', {'fields': ['active']}),
                  ]
 
-    list_display = ('name_admin', 'group_admin', 'active_admin')
+    list_display = ('name', 'group', 'active_admin')
     search_fields = ['name']
+    list_filter = ['group', 'active']
 
 
 class GroupAdmin(admin.ModelAdmin):
 
     search_fields = ['name']
+    list_filter = ['name']
+    list_display = ['name', 'count_group']
+    fieldsets = [
+        ('Введите имя группы', {'fields': ['name']}),
+
+    ]
 
 # Регистрация моделей в админке
 
