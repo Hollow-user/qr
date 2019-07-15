@@ -72,10 +72,39 @@ class LectureIdPage(View):
                 return redirect('thx_url')
 
 
-class StudentPage(View):
-    """Отображение списка студентов """
+class GroupPage(View):
+    """ Вывод страницы с группами"""
     def get(self, request):
-        students = Student.objects.all()
+        groups = Group.objects.all()
+        pagitanor = Paginator(groups, 4)
+        page_number = request.GET.get('page', 1)
+        page = pagitanor.get_page(page_number)
+        is_paginator = page.has_other_pages()
+        if page.has_previous():
+            prev_url = '?page={}'.format(page.previous_page_number())
+        else:
+            prev_url = ''
+        if page.has_next():
+            next_url = '?page={}'.format(page.next_page_number())
+        else:
+            next_url = ''
+        context = {
+                   'groups': page,
+                   'prev_url': prev_url,
+                   'next_url': next_url,
+                   'is_paginator': is_paginator
+                   }
+        return render(request, 'testpages/group.html', context=context)
+
+    def post(self, request):
+        return redirect('group_id_page', request.POST['Group'])
+
+
+class GroupIdPage(View):
+    """ Вывод страницы со студентами группы"""
+    def get(self, request, id):
+        students = Student.objects.filter(group=id).order_by('-active', 'name')
+        group = Group.objects.get(id=id)
         pagitanor = Paginator(students, 4)
         page_number = request.GET.get('page', 1)
         page = pagitanor.get_page(page_number)
@@ -90,14 +119,14 @@ class StudentPage(View):
             next_url = ''
         context = {
             'students': page,
+            'group': group,
             'prev_url': prev_url,
             'next_url': next_url,
             'is_paginator': is_paginator
         }
-        return render(request, 'testpages/student.html',
-                      context=context)
+        return render(request, 'testpages/group_id.html', context=context)
 
-    def post(self, request):
+    def post(self, request, id):
         return redirect('student_id_page', request.POST['Student'])
 
 
@@ -144,8 +173,8 @@ class ThxPage(PageMixin, View):
 
 
 class DateLatePage(PageMixin, View):
-    """Вывод страницы если студент пытается отметиться за прошедшую дату"""
-    message = 'Вы пытаетесь отметится за прошедшую дату'
+    """Вывод страницы если студент пытается отметиться за другую дату"""
+    message = 'Отметится можно только в день проведения лекции'
 
 
 class CheckPage(PageMixin, View):
