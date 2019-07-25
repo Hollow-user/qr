@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
 from django.core.paginator import Paginator
+from django.db.models import Q
 from datetime import date
 from .utils import PageMixin
 from .models import *
@@ -21,24 +22,49 @@ class QrPage(View):
 class LecturePage(View):
     """Отображение страницы с лекциями"""
     def get(self, request):
-        lectures = Lecture.objects.all()
+        search_query = request.GET.get('search', '')
+        if search_query:
+            search_paginator = True
+            lectures = Lecture.objects.filter(
+                Q(title__icontains=search_query) |
+                Q(group__name__icontains=search_query) |
+                Q(date__icontains=search_query)
+
+            )
+        else:
+            search_paginator = False
+            lectures = Lecture.objects.all()
         pagitanor = Paginator(lectures, 4)
         page_number = request.GET.get('page', 1)
         page = pagitanor.get_page(page_number)
         is_paginator = page.has_other_pages()
         if page.has_previous():
             prev_url = '?page={}'.format(page.previous_page_number())
+            prev_url_search = '?search={}&page={}'.format(
+                search_query,
+                page.previous_page_number()
+            )
         else:
             prev_url = ''
+            prev_url_search = ''
         if page.has_next():
             next_url = '?page={}'.format(page.next_page_number())
+            next_url_search = '?search={}&page={}'.format(
+                search_query,
+                page.next_page_number()
+            )
         else:
             next_url = ''
+            next_url_search = ''
         context = {
             'lectures': page,
             'prev_url': prev_url,
             'next_url': next_url,
-            'is_paginator': is_paginator
+            'is_paginator': is_paginator,
+            'search_query': search_query,
+            'search_paginator': search_paginator,
+            'prev_url_search': prev_url_search,
+            'next_url_search': next_url_search,
         }
         return render(request, 'testpages/lecture.html',
                       context=context)
@@ -64,7 +90,7 @@ class LectureIdPage(View):
                 return redirect('check_url')
             else:
                 request.session['check'] = True
-                request.session.set_expiry(86400)
+                request.session.set_expiry(3600)
                 a = request.POST
                 b = get_object_or_404(Student, id__iexact=a['Student'])
                 c = get_object_or_404(Lecture, id__iexact=id)
@@ -75,24 +101,44 @@ class LectureIdPage(View):
 class GroupPage(View):
     """ Вывод страницы с группами"""
     def get(self, request):
-        groups = Group.objects.all()
+        search_query = request.GET.get('search', '')
+        if search_query:
+            search_paginator = True
+            groups = Group.objects.filter(Q(name__icontains=search_query))
+        else:
+            search_paginator = False
+            groups = Group.objects.all()
         pagitanor = Paginator(groups, 4)
         page_number = request.GET.get('page', 1)
         page = pagitanor.get_page(page_number)
         is_paginator = page.has_other_pages()
         if page.has_previous():
             prev_url = '?page={}'.format(page.previous_page_number())
+            prev_url_search = '?search={}&page={}'.format(
+                search_query,
+                page.previous_page_number()
+            )
         else:
             prev_url = ''
+            prev_url_search = ''
         if page.has_next():
             next_url = '?page={}'.format(page.next_page_number())
+            next_url_search = '?search={}&page={}'.format(
+                search_query,
+                page.next_page_number()
+            )
         else:
             next_url = ''
+            next_url_search = ''
         context = {
                    'groups': page,
                    'prev_url': prev_url,
                    'next_url': next_url,
-                   'is_paginator': is_paginator
+                   'is_paginator': is_paginator,
+                   'search_paginator': search_paginator,
+                   'search_query': search_query,
+                   'prev_url_search': prev_url_search,
+                   'next_url_search': next_url_search,
                    }
         return render(request, 'testpages/group.html', context=context)
 

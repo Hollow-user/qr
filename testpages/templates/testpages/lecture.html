@@ -10,6 +10,17 @@
 
 {% block content %}
 
+
+
+    <p>
+        <form class="form-inline" action="{% url 'lecture_url' %}">
+            <input class="form-control mr-sm-2 ml-3   " type="search" placeholder="Поиск" aria-label="Search" name="search">
+            <button class="btn btn btn-outline-primary " type="submit">Найти</button>
+        </form>
+    </p>
+
+
+
 {% for lecture in lectures.object_list %}
 
 
@@ -18,32 +29,60 @@
 
 {% endfor %}
 
-<p>{% if is_paginator %}
-    <nav aria-label="">
-        <ul class="pagination justify-content-center">
-            <li class="page-item ">
-                <a class="page-link" href="{{prev_url}}" tabindex="-1" aria-disabled="true">Назад</a>
-            </li>
+<p>
+    {% if is_paginator %}
+        {% if search_paginator %}
+            <nav aria-label="">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item ">
+                        <a class="page-link" href="{{prev_url_search}}" tabindex="-1" aria-disabled="true">Назад</a>
+                    </li>
 
-            {%for n in lectures.paginator.page_range%}
-            {% if lectures.number == n%}
+                    {%for n in lectures.paginator.page_range%}
+                    {% if lectures.number == n%}
 
-             <li class="page-item active" aria-current="page">
-                <a class="page-link" href="?page={{n}}">{{n}} <span class="sr-only">(current)</span></a>
-            </li>
-            {% else%}
-            <li class="page-item">
-                <a class="page-link" href="?page={{n}}">{{n}}</a>
-            </li>
-            {%endif%}
+                     <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ n }}">{{n}} <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% else%}
+                    <li class="page-item">
+                        <a class="page-link" href="?search={{ search_query }}&page={{ n }}">{{n}}</a>
+                    </li>
+                    {%endif%}
+                    {%endfor%}
+                    <li class="page-item">
+                        <a class="page-link" href="{{next_url_search}}">Вперед</a>
+                    </li>
+                </ul>
+            </nav>
+        {%else%}
+            <nav aria-label="">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item ">
+                        <a class="page-link" href="{{prev_url}}" tabindex="-1" aria-disabled="true">Назад</a>
+                    </li>
 
-            {%endfor%}
-            <li class="page-item">
-                <a class="page-link" href="{{next_url}}">Вперед</a>
-            </li>
-        </ul>
-    </nav>
-    {% endif %}</p>
+                    {%for n in lectures.paginator.page_range%}
+                    {% if lectures.number == n%}
+
+                     <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="?page={{n}}">{{n}} <span class="sr-only">(current)</span></a>
+                    </li>
+                    {% else%}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{n}}">{{n}}</a>
+                    </li>
+                    {%endif%}
+
+                    {%endfor%}
+                    <li class="page-item">
+                        <a class="page-link" href="{{next_url}}">Вперед</a>
+                    </li>
+                </ul>
+            </nav>
+        {%endif%}
+    {% endif %}
+</p>
 
 
 
