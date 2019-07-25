@@ -26,14 +26,15 @@ class Lecture(models.Model):
     title = models.CharField(max_length=50, verbose_name='Лекция')
     date = models.DateField(auto_created=True, verbose_name='Дата')
     students_come = models.ManyToManyField('Student', blank=True,
-                                           related_name='students',)
+                                           related_name='students',
+                                           verbose_name='Присутствующие')
     group = models.ForeignKey(
         Group, verbose_name='Группа',
         on_delete=models.CASCADE
     )
 
     def __str__(self):
-        return '{}'.format(self.title)
+        return '{} ({})'.format(self.title, self.date)
 
     def stud_come(self):
         """ Отображение числа пришедших студентов из группы"""
@@ -43,7 +44,7 @@ class Lecture(models.Model):
     stud_come.short_description = 'Студентов пришло'
 
     def get_absolute_url(self):
-        return reverse('lecture_detail_url', kwargs={'id': self.id})
+        return reverse('qr_id_page', kwargs={'id': self.id})
 
     class Meta:
         verbose_name = 'Лекцию'
